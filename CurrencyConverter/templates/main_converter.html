@@ -1,14 +1,23 @@
+{% load static %}
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="{% static 'forms_buttons.css' %}">
 </head>
 <body>
-    <form action = "" method = "post">
-    {% csrf_token %}
-    {{form }}
-    <input type="submit" value=Submit">
-</form>
+<br>
+<div style="text-align:center;">
+    <form action="" method="post">
+        {% csrf_token %}
+
+        <span class="p3"><b style="font-size: 25px">From {{ form.currency1 }} To {{ form.currency2 }}</b></span>
+        <p><span class="p3"><b style="font-size: 25px">Amount {{ form.amount }}</b></span></p>
+        <button class="button">Submit</button>
+    </form>
+</div>
+
 </body>
 </html>
