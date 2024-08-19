@@ -12,12 +12,18 @@
 <div style="text-align:center;">
     <form action="" method="post">
         {% csrf_token %}
-
+        {% block content %}
         <span class="p3"><b style="font-size: 25px">From {{ form.currency1 }} To {{ form.currency2 }}</b></span>
         <p><span class="p3"><b style="font-size: 25px">Amount {{ form.amount }}</b></span></p>
-        <button class="button">Submit</button>
+        <button class="button" onclick="buttonClicked()">Submit</button>
+        <p id="paragraph1"><span class="p3"><b style="font-size: 25px">Amount {{ currency1 }}</b></span></p>
+        {% endblock %}
     </form>
-</div>
+    <script>
+        function buttonClicked(id){
 
+        }
+    </script>
+</div>
 </body>
 </html>
