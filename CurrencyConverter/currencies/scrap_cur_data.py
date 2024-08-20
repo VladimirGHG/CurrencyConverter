@@ -1,19 +1,39 @@
-import requests
 from bs4 import BeautifulSoup
-
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 
 class GoogleFinanceParser:
     def __init__(self, currency1, currency2, amount):
-        self.site_html = requests.get(f"https://www.google.com/finance/quote/{currency1.upper()}-{currency2.upper()}",
-                                      headers={
-                                          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}).text
-        self.storage = []
+        driver = webdriver.Chrome()
+
+        self.js_content = driver.page_source
         self.amount = amount
+        self.currency1 = currency1
+        self.currency2 = currency2
 
     def parseData(self):
-        soup = BeautifulSoup(self.site_html, "lxml")
-        exchange_rate = (soup.find("div", attrs={
-            "class": "VfPpkd-WsjYwc VfPpkd-WsjYwc-OWXEXe-INsAgc KC1dQ Usd1Ac AaN0Dd  QZMA8b"}).
-                         find("div", attrs={"class": "YMlKec fxKbKc"}).text)
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")  # Run headless if you don't need a visible browser window
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
 
-        return exchange_rate * self.amount
+        # Set up the WebDriver
+        service = Service("C:/Drivers/chromedriver.exe")
+        driver = webdriver.Chrome(service=service, options=chrome_options)
+
+        try:
+            driver.get(f"https://www.google.com/finance/quote/{self.currency1.upper()}-{self.currency2.upper()}")
+
+            driver.implicitly_wait(15)  # seconds
+
+            exchange_rate_element = driver.find_element(By.CLASS_NAME, 'YMlKec.fxKbKc')
+
+            exchange_rate = float(exchange_rate_element.text)
+
+        finally:
+            driver.quit()
+
+        return [exchange_rate * self.amount, exchange_rate]
+
